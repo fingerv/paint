@@ -12,6 +12,14 @@
 	<?php echo CHtml::encode($data->model); ?>
 	<br />
 
+    <b><?php echo CHtml::encode($data->getAttributeLabel('class')); ?>:</b>
+    <?php echo CHtml::encode($data->class); ?>
+    <br />
+
+    <b><?php echo CHtml::encode($data->getAttributeLabel('heads')); ?>:</b>
+    <?php echo CHtml::encode($data->heads); ?>
+    <br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('scheme')); ?>:</b>
 	<?php echo CHtml::encode($data->scheme); ?>
 	<br />

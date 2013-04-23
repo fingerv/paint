@@ -1,27 +1,20 @@
 <?php
 
 /**
- * This is the model class for table "heads".
+ * This is the model class for table "user".
  *
- * The followings are the available columns in table 'heads':
+ * The followings are the available columns in table 'user':
  * @property integer $id
- * @property string $brand
- * @property string $model
- * @property string $class
+ * @property string $username
+ * @property string $password
+ * @property string $email
  */
-class Head extends CActiveRecord
+class User extends CActiveRecord
 {
-	public $classes = array(
-		'A' => 'Класс А',
-		'B' => 'Класс B',
-		'C' => 'Класс C',
-	);
-
-	public $colorsList = array('C','M','Y', 'K','Lc','Lm','Or','Gr', 'W', 'V', 'P', 'F');
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return Head the static model class
+	 * @return User the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -33,7 +26,7 @@ class Head extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'heads';
+		return 'user';
 	}
 
 	/**
@@ -44,11 +37,11 @@ class Head extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('brand, model, class', 'required'),
-			array('brand, model, class', 'length', 'max'=>255),
+			array('username, password', 'required'),
+			array('username, password, email', 'length', 'max'=>128),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, brand, model, class', 'safe', 'on'=>'search'),
+			array('id, username, password, email', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -63,19 +56,6 @@ class Head extends CActiveRecord
 		);
 	}
 
-	public function findPaints()
-	{
-		$sql = 'SELECT * FROM paints WHERE LOWER(class) = :class';
-
-		$reader = Yii::app()->db->createCommand($sql)->query(array('class' => strtolower($this->class)));
-
-		$result = array();
-		while($row = $reader->read())
-			$result[$row['id']] = $row;
-
-		return $result;
-	}
-
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -83,9 +63,9 @@ class Head extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'brand' => 'Бренд',
-			'model' => 'Модель',
-			'class' => 'Класс',
+			'username' => 'Username',
+			'password' => 'Password',
+			'email' => 'Email',
 		);
 	}
 
@@ -101,17 +81,12 @@ class Head extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('brand',$this->brand,true);
-		$criteria->compare('model',$this->model,true);
-		$criteria->compare('class',$this->class,true);
+		$criteria->compare('username',$this->username,true);
+		$criteria->compare('password',$this->password,true);
+		$criteria->compare('email',$this->email,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
-
-    public function __toString()
-    {
-        return $this->brand . ' ' .$this->model;
-    }
 }

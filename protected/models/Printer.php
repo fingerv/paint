@@ -12,9 +12,15 @@
  */
 class Printer extends CActiveRecord
 {
+    public $classes = array(
+        'A' => 'Класс А',
+        'B' => 'Класс B',
+        'C' => 'Класс C',
+    );
 	public $schemeSelection = array();
 	public $colorSelection = array();
 	public $colorsList = array();
+    public $headIds = array();
 
 	public $supportedSchemes = array(
 		'CMYK' => 'CMYK',
@@ -54,12 +60,13 @@ class Printer extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('brand, model, schemeSelection', 'required'),
-			array('brand, model, scheme, logo', 'length', 'max'=>255),
+			array('brand, model, class, schemeSelection', 'required'),
+			array('brand, model, class, scheme, logo', 'length', 'max'=>255),
 			array('colorSelection', 'validateColors'),
+            array('headIds', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, brand, model, logo, colorSelection, schemeSelection', 'safe', 'on'=>'search'),
+			array('id, brand, model, class, logo, colorSelection, schemeSelection, headIds', 'safe', 'on'=>'search'),
 
 			array('logo', 'file', 'allowEmpty'=>true, 'types' => array('jpeg', 'gif', 'png', 'jpg'), 'maxSize' => 1024 * 1024, )
 		);
@@ -84,6 +91,7 @@ class Printer extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+            'heads'=>array(self::MANY_MANY, 'Head', 'printer_heads(printer_id, head_id)'),
 		);
 	}
 
@@ -128,6 +136,19 @@ class Printer extends CActiveRecord
 		return parent::beforeSave();
 	}
 
+    protected function afterSave()
+    {
+        parent::afterSave();
+
+        PrinterHead::model()->deleteAll("`printer_id` = :printer_id",array(':printer_id' => $this->id));
+        foreach($this->headIds as $headId){
+            $head = new PrinterHead();
+            $head->printer_id = $this->id;
+            $head->head_id = $headId;
+            $head->save();
+        }
+    }
+
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -137,6 +158,8 @@ class Printer extends CActiveRecord
 			'id' => 'ID',
 			'brand' => 'Бренд',
 			'model' => 'Модель',
+            'class' => 'Class',
+            'heads' => 'Поддерживаемые головки',
 			'scheme' => 'Поддерживаемые схемы',
 			'schemeSelection' => 'Поддерживаемые схемы',
 			'colorSelection' => 'Дополнительные цвета',
@@ -148,10 +171,10 @@ class Printer extends CActiveRecord
 	{
 		$conditions = array();
 		foreach($this->colorsList as $color) {
-			$conditions[] = " $color IS NOT NULL ";
+			$conditions[] = " `$color` IS NOT NULL ";
 		}
 
-		$sql = "SELECT * FROM paints WHERE " . implode(" OR ", $conditions);
+		$sql = "SELECT * FROM paints WHERE `class`='".$this->class."' AND (" . implode(" OR ", $conditions).")";
 
 		$result = array();
 		$reader = Yii::app()->db->createCommand($sql)->query();
@@ -176,6 +199,7 @@ class Printer extends CActiveRecord
 		$criteria->compare('id',$this->id);
 		$criteria->compare('brand',$this->brand,true);
 		$criteria->compare('model',$this->model,true);
+        $criteria->compare('class',$this->class,true);
 		$criteria->compare('scheme',$this->scheme,true);
 		$criteria->compare('logo',$this->logo,true);
 

@@ -7,6 +7,7 @@
  * @property integer $id
  * @property string $brand
  * @property string $class
+ * @property string $description
  * @property string $C
  * @property string $M
  * @property string $Y
@@ -56,9 +57,10 @@ class Paint extends CActiveRecord
 		return array(
 			array('brand, class', 'required'),
 			array('brand, class, C, M, Y, K, Lc, Lm, Or, Gr, W, V, P, F', 'length', 'max'=>255),
+            array('description', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, brand, class, C, M, Y, K, Lc, Lm, Or, Gr, W, V, P, F', 'safe', 'on'=>'search'),
+			array('id, brand, class, description, C, M, Y, K, Lc, Lm, Or, Gr, W, V, P, F', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -82,6 +84,7 @@ class Paint extends CActiveRecord
 			'id' => 'ID',
 			'brand' => 'Brand',
 			'class' => 'Class',
+            'description' => 'Description',
 			'C' => 'C',
 			'M' => 'M',
 			'Y' => 'Y',
@@ -125,6 +128,7 @@ class Paint extends CActiveRecord
 		$criteria->compare('id',$this->id);
 		$criteria->compare('brand',$this->brand,true);
 		$criteria->compare('class',$this->class,true);
+        $criteria->compare('description',$this->description,true);
 		$criteria->compare('C',$this->C,true);
 		$criteria->compare('M',$this->M,true);
 		$criteria->compare('Y',$this->Y,true);

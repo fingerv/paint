@@ -19,6 +19,10 @@ $this->menu=array(
 
 			<b><?php echo CHtml::encode($model->getAttributeLabel('class')); ?>:</b>
 			<?php echo CHtml::encode($model->class); ?>
+            <br />
+
+            <b><?php echo CHtml::encode($model->getAttributeLabel('description')); ?>:</b>
+            <?php echo CHtml::encode($model->description); ?>
 		</div>
 		<div class="span4">
 			<?php if($model->getAvailableColorImagesCount() != 0): ?>

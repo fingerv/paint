@@ -14,6 +14,7 @@ $this->menu=array(
 	'columns'=>array(
 		'brand',
 		'model',
+        'class',
 		'scheme',
 		array(
 			'class'=>'bootstrap.widgets.TbButtonColumn',

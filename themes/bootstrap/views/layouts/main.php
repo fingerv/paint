@@ -13,7 +13,7 @@
 </head>
 
 <body>
-
+asdf
 <?php $this->widget('bootstrap.widgets.TbNavbar',array(
     'items'=>array(
         array(
@@ -22,6 +22,7 @@
                 array('label'=>'Краски', 'url'=>array('/paint/index')),
 	            array('label'=>'Головки', 'url'=>array('/head/index')),
 	            array('label'=>'Принтеры', 'url'=>array('/printer/index')),
+				array('label'=>'Пользователи', 'url'=>array('/user/index')),
 	            array('label'=>'Виджет', 'url'=>array('/site/widget')),
             ),
         ),

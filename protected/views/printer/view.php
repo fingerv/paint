@@ -14,13 +14,17 @@ $this->menu=array(
 ?>
 
 <h1>View Printer #<?php echo $model->id; ?></h1>
-
 <?php $this->widget('bootstrap.widgets.TbDetailView',array(
 	'data'=>$model,
 	'attributes'=>array(
 		'id',
 		'brand',
 		'model',
+        'class',
+        array('name'=>'heads',
+            'type'=>'text',
+            'value'=> join(', ',$model->heads)
+        ),
 		'scheme',
 		'logo',
 	),

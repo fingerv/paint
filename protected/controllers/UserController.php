@@ -1,6 +1,6 @@
 <?php
 
-class HeadController extends Controller
+class UserController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -8,32 +8,32 @@ class HeadController extends Controller
 	 */
 	public $layout='//layouts/column2';
 
-    /**
-     * @return array action filters
-     */
-    public function filters()
-    {
-        return array(
-            'accessControl', // perform access control for CRUD operations
-        );
-    }
+	/**
+	 * @return array action filters
+	 */
+	public function filters()
+	{
+		return array(
+			'accessControl', // perform access control for CRUD operations
+		);
+	}
 
-    /**
-     * Specifies the access control rules.
-     * This method is used by the 'accessControl' filter.
-     * @return array access control rules
-     */
-    public function accessRules()
-    {
-        return array(
-            array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'users'=>array('@'),
-            ),
-            array('deny',  // deny all users
-                'users'=>array('*'),
-            ),
-        );
-    }
+	/**
+	 * Specifies the access control rules.
+	 * This method is used by the 'accessControl' filter.
+	 * @return array access control rules
+	 */
+	public function accessRules()
+	{
+		return array(
+			array('allow', // allow authenticated user to perform 'create' and 'update' actions
+				'users'=>array('@'),
+			),
+			array('deny',  // deny all users
+				'users'=>array('*'),
+			),
+		);
+	}
 
 	/**
 	 * Displays a particular model.
@@ -52,16 +52,17 @@ class HeadController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Head;
+		$model=new User;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Head']))
+		if(isset($_POST['User']))
 		{
-			$model->attributes=$_POST['Head'];
+            $_POST['User']['password'] = crypt($_POST['User']['password']);
+			$model->attributes=$_POST['User'];
 			if($model->save())
-				$this->redirect(array('index'));
+				$this->redirect(array('view','id'=>$model->id));
 		}
 
 		$this->render('create',array(
@@ -81,11 +82,12 @@ class HeadController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Head']))
+		if(isset($_POST['User']))
 		{
-			$model->attributes=$_POST['Head'];
+            $_POST['User']['password'] = crypt($_POST['User']['password']);
+			$model->attributes=$_POST['User'];
 			if($model->save())
-				$this->redirect(array('index'));
+				$this->redirect(array('view','id'=>$model->id));
 		}
 
 		$this->render('update',array(
@@ -114,18 +116,18 @@ class HeadController extends Controller
 	}
 
 	/**
-	 * Manages all models.
+	 * Lists all models.
 	 */
 	public function actionIndex()
 	{
-		$model=new Head('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Head']))
-			$model->attributes=$_GET['Head'];
+        $model=new User('search');
+        $model->unsetAttributes();  // clear any default values
+        if(isset($_GET['User']))
+            $model->attributes=$_GET['User'];
 
-		$this->render('index',array(
-			'model'=>$model,
-		));
+        $this->render('admin',array(
+            'model'=>$model,
+        ));
 	}
 
 	/**
@@ -135,7 +137,7 @@ class HeadController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Head::model()->findByPk($id);
+		$model=User::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -147,7 +149,7 @@ class HeadController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='head-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='user-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
